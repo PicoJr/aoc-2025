@@ -1,5 +1,3 @@
-from dataclasses import dataclass
-
 example = \
 """
 L68
