@@ -55,17 +55,52 @@ def solve_1(data: str):
     product_ids = [tuple(pr.split("-")) for pr in product_ranges]
     total = 0
     for pr1, pr2 in product_ids:
-        print(f"range: {pr1} {pr2}")
+        # print(f"range: {pr1} {pr2}")
         for pr in invalid_product_id_generator(pr1):
             if int(pr) > int(pr2):
                 break
-            print(f"\t {pr} should be invalid")
+            # print(f"\t {pr} should be invalid")
             if invalid_product_id(str(pr)):
                 total += int(pr)
 
     return total
 
+
+def invalid_product_id_generator2(
+        product_id: str,
+        max_id: str,
+    ) -> Generator[str, None, None]:
+    
+    for digits in range(len(product_id), len(max_id) + 1):
+        # print(f"{digits=}")
+        for pattern_size in range(1, digits):
+            repeat, remainder = divmod(digits, pattern_size)
+            if remainder != 0:
+                continue
+            for number in range(1, 10**pattern_size):
+                invalid_product_id_str = str(number) * repeat
+                # print(f"{invalid_product_id_str=}")
+                yield invalid_product_id_str
+
+
+def solve_2(data: str):
+    product_ranges = data.split(",")
+    product_ids = [tuple(pr.split("-")) for pr in product_ranges]
+    total = 0
+    for pr1, pr2 in product_ids:
+        # print(f"range: {pr1} {pr2}")
+        uniques = set()
+        for x in invalid_product_id_generator2(pr1, pr2):
+            if int(pr1) <= int(x) <= int(pr2):
+                uniques.add(int(x))
+        # print(f"\t{uniques=}")
+        for x in uniques:
+            total += x
+    return total
+
+
 if __name__ == "__main__":
     print(solve_1(example))
     print(solve_1(puzzle))
-    # test_invalid_product_id_generator()
+    print(solve_2(example))
+    print(solve_2(puzzle))
